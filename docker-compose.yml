@@ -1,0 +1,135 @@
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: miniwallet_app
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www
+      - ./vendor:/var/www/vendor:delegated
+      - ./node_modules:/var/www/node_modules:delegated
+      - ./storage:/var/www/storage:delegated
+      - ./bootstrap/cache:/var/www/bootstrap/cache:delegated
+      - ./.env:/var/www/.env:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - mailhog
+    networks:
+      - miniwallet_net
+    command: ["php","artisan","octane:start","--server=swoole","--workers=4","--max-requests=500","--host=0.0.0.0","--port=8000"]
+
+  queue-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: miniwallet_queue
+    container_name: miniwallet_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www:cached
+      - ./storage:/var/www/storage:delegated
+      - ./bootstrap/cache:/var/www/bootstrap/cache:delegated
+      - ./.env:/var/www/.env:ro
+    depends_on:
+      - redis
+      - db
+      - mailhog
+    command: ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+    networks:
+      - miniwallet_net
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: miniwallet_scheduler
+    container_name: miniwallet_scheduler
+    restart: unless-stopped
+    working_dir: /var/www
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www:cached
+      - ./storage:/var/www/storage:delegated
+      - ./.env:/var/www/.env:ro
+    depends_on:
+      - db
+      - redis
+      - mailhog
+    networks:
+      - miniwallet_net
+    command: ["php","artisan","schedule:work"]
+
+  redis:
+    image: redis:7-alpine
+    container_name: miniwallet_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - miniwallet_net
+
+  db:
+    image: mysql:8.0
+    container_name: miniwallet_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_MYSQL_ROOT_PASSWORD}  
+      MYSQL_DATABASE: ${DB_DATABASE}      
+      MYSQL_USER: ${DB_USERNAME}         
+      MYSQL_PASSWORD: ${DB_PASSWORD}     
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - miniwallet_net
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: miniwallet_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 128M
+      PHPSESSID_COOKIE_SECURE: "0"
+    depends_on:
+      - db
+    networks:
+      - miniwallet_net
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: miniwallet_mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    networks:
+      - miniwallet_net
+
+volumes:
+  db_data:
+  redis_data:
+
+networks:
+  miniwallet_net:
+    driver: bridge
