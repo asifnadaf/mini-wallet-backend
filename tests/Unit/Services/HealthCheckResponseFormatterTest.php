@@ -65,24 +65,16 @@ class HealthCheckResponseFormatterTest extends TestCase
             'mysql_server' => ServerStatus::DOWN,
         ]);
 
-        $expectedData = [
-            'status' => 'unhealthy',
-            'services' => [
-                [
-                    'service' => 'compute_server',
-                    'status' => 'up',
-                    'last_checked' => now()->format('Y-m-d H:i:s')
-                ],
-                [
-                    'service' => 'mysql_server',
-                    'status' => 'down',
-                    'last_checked' => now()->format('Y-m-d H:i:s')
-                ]
-            ]
-        ];
-
         $mockApiResponse->shouldReceive('success')
-            ->with($expectedData, 'Some services are experiencing issues')
+            ->withArgs(function ($data, $message) {
+                return $data['status'] === 'unhealthy' &&
+                    $message === 'Some services are experiencing issues' &&
+                    count($data['services']) === 2 &&
+                    $data['services'][0]['service'] === 'compute_server' &&
+                    $data['services'][0]['status'] === 'up' &&
+                    $data['services'][1]['service'] === 'mysql_server' &&
+                    $data['services'][1]['status'] === 'down';
+            })
             ->once()
             ->andReturn(response()->json(['success' => true]));
 

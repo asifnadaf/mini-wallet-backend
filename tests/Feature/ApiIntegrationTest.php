@@ -35,11 +35,13 @@ class ApiIntegrationTest extends TestCase
             return str_starts_with($route->uri(), 'api/');
         });
 
-        $this->assertCount(2, $apiRoutes, 'Should have exactly two API routes');
+        $this->assertCount(4, $apiRoutes, 'Should have exactly four API routes');
 
         $routeUris = $apiRoutes->pluck('uri')->toArray();
         $this->assertContains('api/v1/health-check', $routeUris);
         $this->assertContains('api/v1/register', $routeUris);
+        $this->assertContains('api/v1/login', $routeUris);
+        $this->assertContains('api/v1/logout', $routeUris);
 
         $healthCheckRoute = $apiRoutes->first(function ($route) {
             return $route->uri() === 'api/v1/health-check';
