@@ -12,7 +12,7 @@ A Laravel-based mini wallet application with transaction management, user authen
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/asifnadaf/mini-wallet-backend.git
    cd mini-wallet-backend
    ```
 
