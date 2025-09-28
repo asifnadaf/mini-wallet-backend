@@ -29,7 +29,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: miniwallet_queue
     container_name: miniwallet_queue
     restart: unless-stopped
     working_dir: /var/www
@@ -53,7 +52,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: miniwallet_scheduler
     container_name: miniwallet_scheduler
     restart: unless-stopped
     working_dir: /var/www

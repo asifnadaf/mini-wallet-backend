@@ -54,8 +54,14 @@ WORKDIR /var/www
 # Only copy composer files for layer caching
 COPY composer.json composer.lock /var/www/
 
-# Install PHP deps
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+# Install PHP deps (skip scripts to avoid artisan issues)
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
+
+# Copy the rest of the application
+COPY . /var/www
+
+# Now run composer scripts after all files are in place
+RUN composer run-script post-autoload-dump
 
 # ---------- Entrypoint ----------
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
@@ -66,10 +72,11 @@ COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./laravel-cron /etc/cron.d/laravel-cron
 RUN chmod 0644 /etc/cron.d/laravel-cron && crontab /etc/cron.d/laravel-cron
 
-# Create required dirs
-RUN mkdir -p storage bootstrap/cache \
+# Create required dirs and storage symlink
+RUN mkdir -p storage bootstrap/cache storage/app/public \
  && chown -R www-data:www-data storage bootstrap/cache /var/log/supervisor \
- && chmod -R 775 storage bootstrap/cache
+ && chmod -R 775 storage bootstrap/cache \
+ && ln -sf /var/www/storage/app/public /var/www/public/storage
 
 EXPOSE 8000
 

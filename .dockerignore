@@ -15,3 +15,5 @@ bootstrap/cache/*
 !bootstrap/cache/.gitkeep
 tests
 .phpunit.result.cache
+public/storage
+storage/app/public
