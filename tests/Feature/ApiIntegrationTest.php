@@ -35,7 +35,7 @@ class ApiIntegrationTest extends TestCase
             return str_starts_with($route->uri(), 'api/');
         });
 
-        $this->assertCount(6, $apiRoutes, 'Should have exactly six API routes');
+        $this->assertCount(9, $apiRoutes, 'Should have exactly nine API routes');
 
         $routeUris = $apiRoutes->pluck('uri')->toArray();
         $this->assertContains('api/v1/health-check', $routeUris);
@@ -44,6 +44,9 @@ class ApiIntegrationTest extends TestCase
         $this->assertContains('api/v1/logout', $routeUris);
         $this->assertContains('api/v1/email/send-token', $routeUris);
         $this->assertContains('api/v1/email/verify-token', $routeUris);
+        $this->assertContains('api/v1/forgot-password/email/token', $routeUris);
+        $this->assertContains('api/v1/forgot-password/verify/token', $routeUris);
+        $this->assertContains('api/v1/forgot-password/reset-password', $routeUris);
 
         $healthCheckRoute = $apiRoutes->first(function ($route) {
             return $route->uri() === 'api/v1/health-check';
