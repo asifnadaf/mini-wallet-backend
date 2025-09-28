@@ -49,7 +49,7 @@ A Laravel-based mini wallet application with transaction management, user authen
 5. **Run database migrations and seeders**
    ```bash
    docker compose exec app php artisan migrate
-    docker compose exec app php artisan db:seed --class=UserSeeder
+   docker compose exec app php artisan db:seed --class=UserSeeder
    ```
 
 6. **Generate application key**
