@@ -5,6 +5,8 @@ namespace App\Services\HealthCheck;
 use App\Contracts\HealthCheckable;
 use App\Services\HealthCheck\HealthCheckers\ComputeHealthChecker;
 use App\Services\HealthCheck\HealthCheckers\MySQLHealthChecker;
+use App\Services\HealthCheck\HealthCheckers\RedisHealthChecker;
+use App\Services\HealthCheck\HealthCheckers\MailHogHealthChecker;
 use Illuminate\Support\Collection;
 
 class HealthCheckService
@@ -12,6 +14,8 @@ class HealthCheckService
     protected array $checkers = [
         ComputeHealthChecker::class,
         MySQLHealthChecker::class,
+        RedisHealthChecker::class,
+        MailHogHealthChecker::class,
     ];
 
     public function getHealthStatus(): Collection
