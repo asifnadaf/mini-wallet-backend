@@ -11,4 +11,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.'], function () {
     include __DIR__ . '/Api/V1/email_verification.php';
     // Include settings routes from settings.php
     include __DIR__ . '/Api/V1/settings.php';
+    // Include transactions routes from transactions.php
+    include __DIR__ . '/Api/V1/transactions.php';
 });

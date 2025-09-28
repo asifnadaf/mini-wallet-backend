@@ -1,61 +1,150 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Mini Wallet Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based mini wallet application with transaction management, user authentication, and email verification features.
 
-## About Laravel
+## 🚀 Quick Start with Docker Compose
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Prerequisites
+- Docker and Docker Compose installed on your system
+- Git
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Setup Instructions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd mini-wallet-backend
+   ```
 
-## Learning Laravel
+2. **Create environment file**
+   ```bash
+   cp .env.example .env
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Configure environment variables**
+   Edit `.env` file with your database credentials:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=db
+   DB_PORT=3306
+   DB_DATABASE=miniwallet
+   DB_USERNAME=miniwallet_user
+   DB_PASSWORD=your_password
+   DB_MYSQL_ROOT_PASSWORD=root_password
+   ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+4. **Start the application**
+   ```bash
+   docker-compose up -d
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. **Run database migrations and seeders**
+   ```bash
+   docker-compose exec app php artisan migrate --seed
+   ```
 
-## Laravel Sponsors
+6. **Generate application key**
+   ```bash
+   docker-compose exec app php artisan key:generate
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🌐 Service Endpoints
 
-### Premium Partners
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Application** | http://localhost:8000 | Main Laravel application |
+| **phpMyAdmin** | http://localhost:8080 | Database management interface |
+| **MailHog Web UI** | http://localhost:8025 | Email testing interface |
+| **MailHog SMTP** | localhost:1025 | SMTP server for email testing |
+| **MySQL Database** | localhost:3306 | Database server |
+| **Redis** | localhost:6379 | Cache and session storage |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📋 API Endpoints
 
-## Contributing
+### Health Check
+- `GET /api/v1/health-check` - Server health status
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Authentication (Guest Routes)
+- `POST /api/v1/register` - User registration
+- `POST /api/v1/login` - User login
+- `POST /api/v1/forgot-password/email/token` - Request password reset token
+- `POST /api/v1/forgot-password/verify/token` - Verify password reset token
+- `POST /api/v1/forgot-password/reset-password` - Reset password with token
 
-## Code of Conduct
+### Email Verification (Authenticated)
+- `POST /api/v1/email/send-token` - Send email verification token
+- `POST /api/v1/email/verify-token` - Verify email with token
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### User Settings (Authenticated)
+- `GET /api/v1/user` - Get current user information
+- `POST /api/v1/logout` - User logout
+- `POST /api/v1/change-password` - Change user password (requires email verification)
 
-## Security Vulnerabilities
+### Transactions (Authenticated + Email Verified)
+- `GET /api/v1/transactions` - Get user transactions
+- `POST /api/v1/transactions` - Create new transaction
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠️ Development Commands
 
-## License
+### Run tests
+```bash
+docker-compose exec app php artisan test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### View logs
+```bash
+docker-compose logs app
+docker-compose logs queue-worker
+```
+
+### Access application shell
+```bash
+docker-compose exec app bash
+```
+
+### Stop services
+```bash
+docker-compose down
+```
+
+### Stop and remove volumes
+```bash
+docker-compose down -v
+```
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── Http/Controllers/Api/V1/     # API Controllers
+│   ├── Models/                      # Eloquent Models
+│   ├── Services/                    # Business Logic Services
+│   ├── Events/                      # Event Classes
+│   ├── Listeners/                   # Event Listeners
+│   ├── Mail/                        # Email Templates
+│   └── Jobs/                        # Queue Jobs
+├── database/
+│   ├── migrations/                  # Database Migrations
+│   ├── seeders/                     # Database Seeders
+│   └── factories/                   # Model Factories
+├── routes/Api/V1/                   # API Routes
+└── tests/                          # Test Files
+```
+
+## 🔧 Configuration
+
+The application uses the following services:
+- **Laravel Octane** with Swoole for high performance
+- **MySQL 8.0** for database
+- **Redis** for caching and sessions
+- **MailHog** for email testing
+- **phpMyAdmin** for database management
+- **Queue Workers** for background job processing
+
+## 📝 Notes
+
+- All API endpoints require proper authentication except guest routes
+- Email verification is required for sensitive operations
+- Rate limiting is applied to authentication endpoints
+- Background jobs are processed by dedicated queue workers
+- Database migrations and seeders are included for quick setup

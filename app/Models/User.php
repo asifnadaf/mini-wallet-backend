@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'email_verified_at',
+        'balance'
     ];
 
     /**
@@ -35,7 +36,7 @@ class User extends Authenticatable
         'remember_token',
         'created_at',
         'updated_at',
-        'email_verified_at',
+        'email_verified_at'
     ];
 
     /**
@@ -48,6 +49,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'balance' => 'decimal:2',
         ];
+    }
+
+    public function sentTransactions()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'sender_id');
+    }
+
+    public function receivedTransactions()
+    {
+        return $this->hasMany(\App\Models\Transaction::class, 'receiver_id');
+    }
+
+    public function getAllTransactionsAttribute()
+    {
+        return $this->sentTransactions->merge($this->receivedTransactions)->sortByDesc('completed_at');
     }
 }

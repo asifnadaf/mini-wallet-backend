@@ -51,6 +51,9 @@ class RegisterUserControllerTest extends TestCase
         $mockUser->shouldReceive('getAttribute')
             ->with('email_verified_at')
             ->andReturn(null);
+        $mockUser->shouldReceive('getAttribute')
+            ->with('balance')
+            ->andReturn(0.00);
 
         $validatedData = [
             'name' => 'John Doe',
