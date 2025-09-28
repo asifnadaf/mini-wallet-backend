@@ -52,11 +52,6 @@ A Laravel-based mini wallet application with transaction management, user authen
    docker compose exec app php artisan db:seed --class=UserSeeder
    ```
 
-6. **Generate application key**
-   ```bash
-   docker-compose exec app php artisan key:generate
-   ```
-
 ## 🌐 Service Endpoints
 
 | Service | URL | Description |
