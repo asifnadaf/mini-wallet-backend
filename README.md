@@ -40,7 +40,8 @@ A Laravel-based mini wallet application with transaction management, user authen
 
 5. **Run database migrations and seeders**
    ```bash
-   docker-compose exec app php artisan migrate --seed
+   docker compose exec app php artisan migrate
+    docker compose exec app php artisan db:seed --class=UserSeeder
    ```
 
 6. **Generate application key**
@@ -55,9 +56,6 @@ A Laravel-based mini wallet application with transaction management, user authen
 | **Application** | http://localhost:8000 | Main Laravel application |
 | **phpMyAdmin** | http://localhost:8080 | Database management interface |
 | **MailHog Web UI** | http://localhost:8025 | Email testing interface |
-| **MailHog SMTP** | localhost:1025 | SMTP server for email testing |
-| **MySQL Database** | localhost:3306 | Database server |
-| **Redis** | localhost:6379 | Cache and session storage |
 
 ## 📋 API Endpoints
 
@@ -104,12 +102,7 @@ docker-compose exec app bash
 
 ### Stop services
 ```bash
-docker-compose down
-```
-
-### Stop and remove volumes
-```bash
-docker-compose down -v
+docker-compose stop
 ```
 
 ## 📁 Project Structure
@@ -126,7 +119,6 @@ docker-compose down -v
 ├── database/
 │   ├── migrations/                  # Database Migrations
 │   ├── seeders/                     # Database Seeders
-│   └── factories/                   # Model Factories
 ├── routes/Api/V1/                   # API Routes
 └── tests/                          # Test Files
 ```
@@ -145,6 +137,4 @@ The application uses the following services:
 
 - All API endpoints require proper authentication except guest routes
 - Email verification is required for sensitive operations
-- Rate limiting is applied to authentication endpoints
 - Background jobs are processed by dedicated queue workers
-- Database migrations and seeders are included for quick setup
