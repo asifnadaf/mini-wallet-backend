@@ -22,8 +22,9 @@ A Laravel-based mini wallet application with transaction management, user authen
    ```
 
 3. **Configure environment variables**
-   Edit `.env` file with your database credentials:
+   Edit `.env` file with your database credentials and Pusher configuration:
    ```env
+   # Database Configuration
    DB_CONNECTION=mysql
    DB_HOST=db
    DB_PORT=3306
@@ -31,6 +32,13 @@ A Laravel-based mini wallet application with transaction management, user authen
    DB_USERNAME=miniwallet_user
    DB_PASSWORD=your_password
    DB_MYSQL_ROOT_PASSWORD=root_password
+   
+   # Pusher Configuration (for real-time features)
+   BROADCAST_DRIVER=pusher
+   PUSHER_APP_ID=your_pusher_app_id
+   PUSHER_APP_KEY=your_pusher_app_key
+   PUSHER_APP_SECRET=your_pusher_app_secret
+   PUSHER_APP_CLUSTER=your_pusher_cluster
    ```
 
 4. **Start the application**
