@@ -54,8 +54,8 @@ WORKDIR /var/www
 # Only copy composer files for layer caching
 COPY composer.json composer.lock /var/www/
 
-# Install PHP deps (vendor dir will be overridden by volume mount in dev)
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader || true
+# Install PHP deps
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # ---------- Entrypoint ----------
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh

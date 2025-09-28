@@ -11,7 +11,7 @@ services:
       - .env
     volumes:
       - ./:/var/www
-      - ./node_modules:/var/www/node_modules:delegated
+      - /var/www/vendor
       - ./storage:/var/www/storage:delegated
       - ./bootstrap/cache:/var/www/bootstrap/cache:delegated
       - ./.env:/var/www/.env:ro
@@ -37,6 +37,7 @@ services:
       - .env
     volumes:
       - ./:/var/www:cached
+      - /var/www/vendor
       - ./storage:/var/www/storage:delegated
       - ./bootstrap/cache:/var/www/bootstrap/cache:delegated
       - ./.env:/var/www/.env:ro
@@ -60,6 +61,7 @@ services:
       - .env
     volumes:
       - ./:/var/www:cached
+      - /var/www/vendor
       - ./storage:/var/www/storage:delegated
       - ./.env:/var/www/.env:ro
     depends_on:
