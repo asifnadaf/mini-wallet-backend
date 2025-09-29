@@ -41,7 +41,7 @@ class EmailTokenController extends BaseApiController
             $response = $this->emailTokenService->verify($request->user(), $request->validated());
 
             return $response['success']
-                ? $this->success(message: $response['message'])
+                ? $this->success(data: $response['data'] ?? null, message: $response['message'])
                 : $this->error(message: $response['message'], statusCode: $response['status_code']);
         } catch (Exception $e) {
             Log::error('EmailTokenController@verifyToken error: ' . $e->getMessage());
