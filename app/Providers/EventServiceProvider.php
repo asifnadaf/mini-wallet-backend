@@ -24,7 +24,8 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register broadcast channels
+        require base_path('routes/channels.php');
     }
 
     /**

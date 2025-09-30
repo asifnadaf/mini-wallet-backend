@@ -6,10 +6,7 @@ use App\Http\Controllers\Api\BaseApiController;
 use App\Http\Requests\TransactionRequest;
 use App\Services\TransactionService;
 use App\Events\TransactionCreated;
-use App\Mail\TransactionCreditMail;
-use App\Mail\TransactionDebitMail;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Contracts\ApiResponseInterface;
 
@@ -72,7 +69,6 @@ class TransactionController extends BaseApiController
             // Refresh sender to get updated balance
             $sender->refresh();
 
-            // Broadcast the event (this also triggers local event listeners)
             broadcast(new TransactionCreated($transaction));
 
             return $this->created([

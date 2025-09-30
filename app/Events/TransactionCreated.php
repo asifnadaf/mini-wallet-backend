@@ -8,21 +8,16 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 
 class TransactionCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $transaction;
-    public $senderBalance;
-    public $receiverBalance;
 
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
-        $this->senderBalance = $transaction->sender->balance;
-        $this->receiverBalance = $transaction->receiver->balance;
     }
 
     public function broadcastOn()
@@ -39,18 +34,15 @@ class TransactionCreated implements ShouldBroadcast
             'transaction' => [
                 'id' => $this->transaction->id,
                 'sender_id' => $this->transaction->sender_id,
+                'sender_name' => $this->transaction->sender->name,
                 'receiver_id' => $this->transaction->receiver_id,
-                'sender_name' => $this->transaction->sender_id,
-                'amount' => $this->transaction->amount,
-                'commission_fee' => $this->transaction->commission_fee,
-                'completed_at' => $this->transaction->completed_at,
-                'type' => $this->transaction->sender_id === $this->transaction->sender->id ? 'sent' : 'received',
-                'other_party' => $this->transaction->sender_id === $this->transaction->sender->id
-                    ? $this->transaction->receiver->name
-                    : $this->transaction->sender->name,
+                'receiver_name' => $this->transaction->receiver->name,
             ],
-            'sender_balance' => $this->senderBalance,
-            'receiver_balance' => $this->receiverBalance,
         ];
+    }
+
+    public function broadcastAs()
+    {
+        return 'transaction.created';
     }
 }
